@@ -38,7 +38,8 @@ public interface Proc1<P1> extends Consumer<P1> {
     /**
      * A `Proc1` that does nothing.
      */
-    Proc1<?> NIL = (param) -> {};
+    Proc1<?> NIL = (param) -> {
+    };
 
     /**
      * Implement the logic of the procedure.
@@ -111,7 +112,7 @@ public interface Proc1<P1> extends Consumer<P1> {
     /**
      * Returns a `Proc1` instance that when called will run this
      * procedure first, if there are any exception encountered then
-     * run the `fallback`
+     * run the `fallback`.
      *
      * @param fallback
      *      a {@link Consumer} provided as fallback procedure
@@ -152,7 +153,10 @@ public interface Proc1<P1> extends Consumer<P1> {
      *      A function as described above.
      */
     default Func1<P1, ?> toFunction() {
-        return (p) -> {run(p); return null;};
+        return (p) -> {
+            run(p);
+            return null;
+        };
     }
 
     /**
@@ -186,6 +190,7 @@ public interface Proc1<P1> extends Consumer<P1> {
      * @return
      *      A {@link Proc1} instance as described above.
      */
+    @SuppressWarnings("ReturnValueIgnored")
     static <P> Proc1<P> of(Func1<? super P, ?> function) {
         return function::apply;
     }

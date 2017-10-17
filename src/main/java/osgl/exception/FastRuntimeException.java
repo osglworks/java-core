@@ -60,7 +60,7 @@ public class FastRuntimeException extends RuntimeException {
     }
 
     /**
-     * Construct a `FastRuntimeException` instance with a {@link Throwable cause}
+     * Construct a `FastRuntimeException` instance with a {@link Throwable cause}.
      *
      * @param cause the cause
      */
@@ -69,7 +69,8 @@ public class FastRuntimeException extends RuntimeException {
     }
 
     /**
-     * Construct a `FastRuntimeException` instance with
+     * Construct a `FastRuntimeException` instance with the following parameters.
+     *
      * * a {@link Throwable cause}
      * * a string format template
      * * the string format arguments

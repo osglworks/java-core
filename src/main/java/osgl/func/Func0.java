@@ -33,13 +33,14 @@ import java.util.function.*;
  * A `Func0` implements {@link Supplier} by delegating
  * the {@link Supplier#get()} call to {@link #apply()}.
  *
- * @param <R> The type of the function return value
+ * @param <R>
+ *         The type of the function return value
  */
 @FunctionalInterface
 public interface Func0<R> extends FuncBase, Supplier<R> {
 
     /**
-     * A `Func0` that does nothing and always returns `null`
+     * A `Func0` that does nothing and always returns `null`.
      */
     Func0<?> NIL = () -> null;
 
@@ -55,8 +56,10 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * apply this function instance and use the return value
      * to apply to the `after` {@link Function}.
      *
-     * @param after the after function
-     * @param <T>   the type of return value of the `after` function
+     * @param after
+     *         the after function
+     * @param <T>
+     *         the type of return value of the `after` function
      * @return a `Func0` instance as described above
      */
     default <T> Func0<T> andThen(Function<? super R, ? extends T> after) {
@@ -68,7 +71,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * Apply this function and return the `fallbackValue` if exception
      * encountered during applying this function.
      *
-     * @param fallbackValue the fallback value if there are exception applying this function
+     * @param fallbackValue
+     *         the fallback value if there are exception applying this function
      * @return the result of this function or `fallbackValue` if exception encountered
      */
     default R applyOrElse(final R fallbackValue) {
@@ -79,9 +83,11 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * Apply this function and call fallback function if exception
      * encountered during applying this function.
      *
-     * @param fallback the fallback function to be applied in case of exception
-     * @return the return value of this function or of the fallback function
-     * if exception encountered applying this function
+     * @param fallback
+     *         the fallback function to be applied in case of exception
+     * @return
+     *         the return value of this function or of the fallback function
+     *         if exception encountered applying this function
      */
     default R applyOrElse(final Func0<? extends R> fallback) {
         $.ensureNotNull(fallback);
@@ -93,7 +99,7 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
     }
 
     /**
-     * Delegate {@link Supplier#get()} call to {@link #apply()}
+     * Delegate {@link Supplier#get()} call to {@link #apply()}.
      *
      * @return A return value
      */
@@ -106,10 +112,12 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * first apply this function, in case of exception
      * encountered then return the `fallbackValue`.
      *
-     * @param fallbackValue the value to be returned if exception encountered
-     *                      applying this function
-     * @return the result of this function or `fallbackValue` if
-     * exception encountered
+     * @param fallbackValue
+     *         the value to be returned if exception encountered
+     *         applying this function
+     * @return
+     *      the result of this function or
+     *      `fallbackValue` if exception encountered
      */
     default Func0<R> orElse(R fallbackValue) {
         if (null == fallbackValue) {
@@ -123,7 +131,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * apply this function, in case of exception
      * then apply the fallback function.
      *
-     * @param fallback the fallback function
+     * @param fallback
+     *         the fallback function
      * @return a `Func0` instance as described above
      */
     default Func0<R> orElse(Func0<? extends R> fallback) {
@@ -135,18 +144,19 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * invoked, calling {@link #apply()} method on this instance and discard
      * the return value.
      *
-     * @return
-     *      a {@link Proc0} instance as described above.
+     * @return a {@link Proc0} instance as described above.
      */
     default Proc0 toProcedure() {
         return this::apply;
     }
 
     /**
-     * Returns a `Func0` that when applied always return a constant value
+     * Returns a `Func0` that when applied always return a constant value.
      *
-     * @param value the constant value
-     * @param <T>   the type of the constant value
+     * @param value
+     *         the constant value
+     * @param <T>
+     *         the type of the constant value
      * @return a `Func0` instance as described above
      */
     static <T> Func0<T> constant(T value) {
@@ -157,7 +167,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * Returns a {@link BooleanFunc0} that when applied, always returns
      * a boolean constant.
      *
-     * @param value the boolean constant value
+     * @param value
+     *         the boolean constant value
      * @return the {@link BooleanFunc0} as described above
      */
     static BooleanFunc0 constant(boolean value) {
@@ -168,7 +179,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * Returns a {@link DoubleFunc0} that when applied, always returns
      * a double constant.
      *
-     * @param value the double constant value
+     * @param value
+     *         the double constant value
      * @return the {@link DoubleFunc0} as described above
      */
     static DoubleFunc0 constant(double value) {
@@ -181,7 +193,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      *
      * This method is an alias of {@link IntFunc0#constant(int)}
      *
-     * @param value the int constant value
+     * @param value
+     *         the int constant value
      * @return an {@link IntFunc0} as described above
      */
     static IntFunc0 constant(int value) {
@@ -192,7 +205,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * Returns a {@link LongFunc0} that when applied, always returns
      * a long constant.
      *
-     * @param value the long constant value
+     * @param value
+     *         the long constant value
      * @return the {@link LongFunc0} as described above
      */
     static LongFunc0 constant(long value) {
@@ -205,10 +219,12 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
     }
 
     /**
-     * Factory method that convert a JDK {@link Supplier} to OSGL {@link Func0}
+     * Factory method that convert a JDK {@link Supplier} to OSGL {@link Func0}.
      *
-     * @param supplier The JDK {@link Supplier} instance
-     * @param <T>      The type of value that `supplier` returns
+     * @param supplier
+     *         The JDK {@link Supplier} instance
+     * @param <T>
+     *         The type of value that `supplier` returns
      * @return An OSGL {@link Func0} instance
      */
     static <T> Func0<T> of(Supplier<T> supplier) {
@@ -221,7 +237,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
     /**
      * Convert an {@link BooleanSupplier} to a {@link BooleanFunc0}.
      *
-     * @param booleanSupplier the {@link BooleanSupplier} instance
+     * @param booleanSupplier
+     *         the {@link BooleanSupplier} instance
      * @return a {@link BooleanFunc0} instance
      */
     static BooleanFunc0 of(BooleanSupplier booleanSupplier) {
@@ -234,7 +251,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
     /**
      * Convert an {@link DoubleSupplier} to a {@link DoubleFunc0}.
      *
-     * @param doubleSupplier the {@link DoubleSupplier} instance
+     * @param doubleSupplier
+     *         the {@link DoubleSupplier} instance
      * @return a {@link DoubleFunc0} instance
      */
     static DoubleFunc0 of(DoubleSupplier doubleSupplier) {
@@ -247,7 +265,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
     /**
      * Convert an {@link IntSupplier} to a {@link IntFunc0}.
      *
-     * @param intSupplier the {@link IntSupplier} instance
+     * @param intSupplier
+     *         the {@link IntSupplier} instance
      * @return a {@link IntFunc0} instance
      */
     static IntFunc0 of(IntSupplier intSupplier) {
@@ -260,7 +279,8 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
     /**
      * Convert an {@link LongSupplier} to a {@link LongFunc0}.
      *
-     * @param longSupplier the {@link LongSupplier} instance
+     * @param longSupplier
+     *         the {@link LongSupplier} instance
      * @return a {@link LongFunc0} instance
      */
     static LongFunc0 of(LongSupplier longSupplier) {

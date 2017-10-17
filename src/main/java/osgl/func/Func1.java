@@ -43,7 +43,7 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
     Func1<Object, ?> NIL = (p) -> null;
 
     /**
-     * A function that always return the parameter specified
+     * A function that always return the parameter specified.
      */
     Func1<Object, Object> IDENTITY = (p) -> p;
 
@@ -88,7 +88,7 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
     /**
      * Returns a `Func1` instance that when applied, first
      * apply this function instance and use the return value
-     * to apply to the `after` {@link Function}
+     * to apply to the `after` {@link Function}.
      *
      * @param after
      *      the function to be applied after applied to this function
@@ -136,7 +136,7 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
     /**
      * Returns a `Func1` instance that when applied, first
      * try this function, in case of exception then return
-     * the fallback value
+     * the fallback value.
      *
      * @param fallbackValue
      *      the fallback value when exception encountered applying
@@ -151,7 +151,7 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
     /**
      * Returns a `Func1` instance that when applied, first
      * apply this function instance, in case of exception
-     * then apply the fallback function
+     * then apply the fallback function.
      *
      * @param fallback
      *      the fallback function
@@ -208,13 +208,14 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
      * @return
      *      A {@link Proc1} instance as described above.
      */
+    @SuppressWarnings("ReturnValueIgnored")
     default Proc1<P1> toProcedure() {
         return this::apply;
     }
 
     /**
      * Returns a `Func1` instance that when applied always
-     * returns `null`
+     * returns `null`.
      *
      * @param <PT>
      *     the type of parameter
@@ -230,7 +231,7 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
 
     /**
      * Returns a `Func1` instance that when applied always
-     * return the parameter specified
+     * return the parameter specified.
      *
      * @param <PT>
      *     The type of the parameter
@@ -247,7 +248,7 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
     /**
      * Returns a `Func1` instance that always return
      * a constant value without regarding to the parameter
-     * passed when applying it
+     * passed when applying it.
      *
      * @param value
      *      The constant value
@@ -282,6 +283,18 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
         return function::apply;
     }
 
+    /**
+     * Factory method that convert a {@link Proc1} procedure to a `Func1` instance
+     * that when calling {@link Func1#apply(Object)} method on the returning
+     * function, it will call the {@link Proc1#run(Object)} on the `procedure`.
+     *
+     * @param procedure
+     *      the procedure
+     * @param <P1>
+     *      the parameter take by the procedure
+     * @return
+     *      the function as described above
+     */
     static <P1> Func1<P1, ?> of(final Proc1<P1> procedure) {
         return (p1) -> {
             procedure.run(p1);

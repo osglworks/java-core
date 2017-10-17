@@ -90,7 +90,7 @@ public interface Func2<P1, P2, R> extends FuncBase, BiFunction<P1, P2, R> {
     /**
      * Returns a `Func2` instance that when applied, first
      * apply this function instance and use the return value
-     * to apply to the `after` {@link Function}
+     * to apply to the `after` {@link Function}.
      *
      * @param after
      *      the function to be applied after applied to this function
@@ -121,7 +121,7 @@ public interface Func2<P1, P2, R> extends FuncBase, BiFunction<P1, P2, R> {
     /**
      * Returns a `Func2` instance that when applied, first
      * try this function, in case of exception then return
-     * the fallback value
+     * the fallback value.
      *
      * @param fallbackValue
      *      the fallback value when exception encountered applying
@@ -136,7 +136,7 @@ public interface Func2<P1, P2, R> extends FuncBase, BiFunction<P1, P2, R> {
     /**
      * Returns a `Func2` instance that when applied, first
      * apply this function instance, in case of exception
-     * then apply the fallback function
+     * then apply the fallback function.
      *
      * @param fallback
      *      the fallback function
@@ -156,13 +156,14 @@ public interface Func2<P1, P2, R> extends FuncBase, BiFunction<P1, P2, R> {
      * @return
      *      A {@link Proc2} instance as described above.
      */
+    @SuppressWarnings("ReturnValueIgnored")
     default Proc2<P1, P2> toProcedure() {
         return this::apply;
     }
 
     /**
      * Returns a `Func2` instance that when applied always
-     * returns `null`
+     * returns `null`.
      *
      * @param <P1>
      *     the type of first parameter
@@ -181,7 +182,7 @@ public interface Func2<P1, P2, R> extends FuncBase, BiFunction<P1, P2, R> {
     /**
      * Returns a `Func2` instance that always return
      * a constant value without regarding to the parameters
-     * passed when applying it
+     * passed when applying it.
      *
      * @param value
      *      The constant value

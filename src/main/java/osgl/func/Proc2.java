@@ -41,7 +41,8 @@ public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
     /**
      * A `Proc2` that does nothing.
      */
-    Proc2<?, ?> NIL = (p1, p2) -> {};
+    Proc2<?, ?> NIL = (p1, p2) -> {
+    };
 
     /**
      * Implement the logic of the procedure.
@@ -118,7 +119,7 @@ public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
     /**
      * Returns a `Proc2` instance that when called will run this
      * procedure first, if there are any exception encountered then
-     * run the `fallback`
+     * run the `fallback`.
      *
      * @param fallback
      *      a {@link Consumer} provided as fallback procedure
@@ -161,7 +162,10 @@ public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
      *      A function as described above.
      */
     default Func2<P1, P2, ?> toFunction() {
-        return (p1, p2) -> {run(p1, p2); return null;};
+        return (p1, p2) -> {
+            run(p1, p2);
+            return null;
+        };
     }
 
     /**
@@ -199,6 +203,7 @@ public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
      * @return
      *      A {@link Proc2} instance as described above.
      */
+    @SuppressWarnings("ReturnValueIgnored")
     static <P1, P2> Proc2<P1, P2> of(Func2<? super P1, ? super P2, ?> function) {
         return function::apply;
     }

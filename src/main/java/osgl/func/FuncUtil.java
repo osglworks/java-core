@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Provides utility methods support functional programming
+ * Provides utility methods support functional programming.
  */
 public class FuncUtil {
     FuncUtil() {}
@@ -82,7 +82,7 @@ public class FuncUtil {
     }
 
     /**
-     * Alias of {@link #asFunc0(Supplier)}
+     * Alias of {@link #asFunc0(Supplier)}.
      *
      * @param supplier
      *      The JDK {@link Supplier} instance

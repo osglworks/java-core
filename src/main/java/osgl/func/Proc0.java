@@ -30,7 +30,8 @@ public interface Proc0 extends FuncBase, Runnable {
     /**
      * A `Proc0` that does nothing.
      */
-    Proc0 NIL = () -> {};
+    Proc0 NIL = () -> {
+    };
 
     /**
      * Implement the logic of the procedure.
@@ -123,7 +124,10 @@ public interface Proc0 extends FuncBase, Runnable {
      *      a {@link Func0} instance as described.
      */
     default <T> Func0<T> toFunction() {
-        return () -> {run(); return null;};
+        return () -> {
+            run();
+            return null;
+        };
     }
 
     /**

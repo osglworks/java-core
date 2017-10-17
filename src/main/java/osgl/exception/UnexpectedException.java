@@ -21,7 +21,7 @@ package osgl.exception;
  */
 
 /**
- * A {@link RuntimeException} class with more convenient constructors
+ * A {@link RuntimeException} class with more convenient constructors.
  */
 public class UnexpectedException extends RuntimeException {
 
@@ -56,7 +56,7 @@ public class UnexpectedException extends RuntimeException {
     }
 
     /**
-     * Construct a `UnexpectedException` instance with a {@link Throwable cause}
+     * Construct a `UnexpectedException` instance with a {@link Throwable cause}.
      *
      * @param cause the cause
      */
@@ -65,7 +65,8 @@ public class UnexpectedException extends RuntimeException {
     }
 
     /**
-     * Construct a `UnexpectedException` instance with
+     * Construct a `UnexpectedException` instance. Below are required parameters:
+     *
      * * a {@link Throwable cause}
      * * a string format template
      * * the string format arguments
