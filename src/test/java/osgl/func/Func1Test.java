@@ -1,110 +1,34 @@
 package osgl.func;
 
-/*-
- * #%L
- * OSGL Core
- * %%
- * Copyright (C) 2017 OSGL (Open Source General Library)
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import osgl.exception.E;
 import osgl.ut.TestBase;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
+@RunWith(MockitoJUnitRunner.class)
 public class Func1Test extends TestBase {
 
-    private static class TargetBase implements Func1<String, Integer> {
-        @Override
-        public Integer apply(String s) {
-            return s.length();
-        }
-    }
+    protected List<String> strings = new ArrayList<>();
+    protected Func1<String, Integer> addToStrings = (s) -> {strings.add(s); return s.length();};
 
-    public static class ApplyOrElseTest extends TestBase {
-
-        private static class WithoutException extends TargetBase {}
-
-        private static class WithException extends TargetBase {
-            @Override
-            public Integer apply(String s) {
-                throw new RuntimeException();
-            }
-        }
-
-        private static class Fallback extends TargetBase {
-            @Override
-            public Integer apply(String s) {
-                return s.length() * 2;
-            }
-        }
-
-        @Test
-        public void itShallNotCallFallbackIfNoExceptionEncountered() {
-            WithoutException target = new WithoutException();
-            eq(3, target.applyOrElse("foo", 5));
-            eq(3, target.applyOrElse("foo", new Fallback()));
-            eq(3, target.orElse(5).apply("foo"));
-            eq(3, target.orElse(new Fallback()).apply("foo"));
-        }
-
-        @Test
-        public void itShallCallFallbackIfExceptionEncountered() {
-            WithException target = new WithException();
-            eq(5, target.applyOrElse("foo", 5));
-            eq(5, target.orElse(5).apply("foo"));
-            eq(6, target.applyOrElse("foo", new Fallback()));
-            eq(6, target.orElse(new Fallback()).apply("foo"));
-        }
-
-    }
-
-    private static Function<Integer, Integer> DOUBLE = (n) -> n * 2;
-
-    @Test
-    public void andThenTest() {
-        Func1<String, Integer> func = new TargetBase().andThen(DOUBLE);
-        eq(6, func.apply("foo"));
-    }
-
-    private static Func1<Class, String> CLASS_NAME = Class::getSimpleName;
-
-    @Test
-    public void nowThatTest() {
-        Func0<Integer> func0 = new TargetBase().nowThat(() -> "foo");
-        eq(3, func0.apply());
-
-        Func1<Class, Integer> func1 = new TargetBase().nowThat(CLASS_NAME);
-        eq(5, func1.apply(Func1.class));
+    @Before
+    public void prepare() {
+        strings.clear();
     }
 
     @Test
-    public void curryingTest() {
-        TargetBase func1 = new TargetBase();
-        Func0<Integer> curry = func1.currying("foo");
-        eq(func1.apply("foo"), curry.apply());
-    }
-
-    @Test
-    public void testDumb() {
-        Func1<Integer, Integer> x = Func1.dumb();
+    public void testNil() {
+        Func1<Integer, Integer> x = Func1.nil();
         isNull(x.apply(333));
-        isNull(Func1.dumb().apply(new Object()));
-        same(Func1.dumb(), Func1.dumb());
-        same(Func1.NIL, Func1.dumb());
+        isNull(Func1.nil().apply(new Object()));
+        same(Func1.nil(), Func1.nil());
+        same(Func1.NIL, Func1.nil());
     }
 
     @Test
@@ -127,5 +51,86 @@ public class Func1Test extends TestBase {
         Func1<Integer, String> y = Func1.constant("");
         eq("", y.apply(5));
         eq("", y.apply(4));
+    }
+
+
+    public static class CompositionTest extends Func1Test {
+
+        private static class Foo {}
+
+        private Function<Class, String> before = Class::getSimpleName;
+
+        private Function<Integer, Integer> after = (n) -> n * 2;
+
+        @Test
+        public void itShallRunAfterProcedureAfterThisProcedure() {
+            eq(6, addToStrings.andThen(after).apply("foo"));
+        }
+
+        @Test
+        public void itShallRunBeforeProcedureBeforeThisProcedure() {
+            eq(3, addToStrings.nowThat(before).apply(Foo.class));
+            yes(strings.contains("Foo"));
+        }
+    }
+
+    public static class FallbackTest extends Func1Test {
+
+        Func1<String, Integer> failCase = (s) -> {throw E.unexpected();};
+        Func1<String, Integer> fallback = (s) -> {strings.add("**" + s + "**"); return s.length() + 4;};
+
+        @Test
+        public void itShallNotCallfallbackIfNoException() {
+            eq(3, addToStrings.applyOrElse("foo", fallback));
+            yes(strings.contains("foo"));
+
+            strings.clear();
+            eq(3, addToStrings.orElse(fallback).apply("foo"));
+            yes(strings.contains("foo"));
+
+            strings.clear();
+            eq(3, addToStrings.applyOrElse("foo", 5));
+            yes(strings.contains("foo"));
+        }
+
+        @Test
+        public void itShallCallFallbackIfExceptionEncountered() {
+            eq(7, failCase.applyOrElse("foo", fallback));
+            yes(strings.contains("**foo**"));
+            no(strings.contains("foo"));
+
+            strings.clear();
+            eq(7, failCase.orElse(fallback).apply("foo"));
+            yes(strings.contains("**foo**"));
+            no(strings.contains("foo"));
+
+            strings.clear();
+            eq(7, failCase.applyOrElse("foo", 7));
+            no(strings.contains("**foo**"));
+            no(strings.contains("foo"));
+        }
+    }
+
+    public static class ConversionTest extends Func1Test {
+        @Test
+        public void testToFunction() {
+            addToStrings.toProcedure().run("foo");
+            yes(strings.contains("foo"));
+        }
+
+        @Test
+        public void testCurrying() {
+            eq(3, addToStrings.curry("foo").apply());
+            yes(strings.contains("foo"));
+        }
+    }
+
+    public static class FactoryTest extends Func1Test {
+        @Test
+        public void testOfProcedure() {
+            Proc1<CharSequence> procedure = (cs) -> strings.add(cs.toString());
+            isNull(Func1.of(procedure).apply("foo"));
+            yes(strings.contains("foo"));
+        }
     }
 }

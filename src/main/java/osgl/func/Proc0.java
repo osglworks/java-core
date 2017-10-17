@@ -21,7 +21,6 @@ package osgl.func;
  */
 
 import osgl.$;
-import osgl.func.util.Proc0ToFunc0Adaptor;
 
 /**
  * A procedure that takes no parameters.
@@ -124,7 +123,7 @@ public interface Proc0 extends FuncBase, Runnable {
      *      a {@link Func0} instance as described.
      */
     default <T> Func0<T> toFunction() {
-        return new Proc0ToFunc0Adaptor<>(this);
+        return () -> {run(); return null;};
     }
 
     /**

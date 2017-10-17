@@ -38,7 +38,7 @@ import java.util.function.Function;
 public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
 
     /**
-     * A dumb function that always returns null.
+     * A nil function that always returns null.
      */
     Func1<Object, ?> NIL = (p) -> null;
 
@@ -47,6 +47,19 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
      */
     Func1<Object, Object> IDENTITY = (p) -> p;
 
+    /**
+     * Apply this function with fallback value specified.
+     *
+     * When there are exception encountered applying this function then return
+     * the `fallbackValue`.
+     *
+     * @param param
+     *      The parameter applied to this function
+     * @param fallbackValue
+     *      The fallback value to be returned if there are exception applying this function.
+     * @return
+     *      the return value of this function or the `fallbackValue` if exception encountered.
+     */
     default R applyOrElse(P1 param, R fallbackValue) {
         return applyOrElse(param, constant(fallbackValue));
     }
@@ -55,6 +68,8 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
      * Apply this function and call fallback function if exception
      * encountered during applying this function.
      *
+     * @param param
+     *      a parameter to be applied to the function
      * @param fallback
      *      the fallback function to be applied in case of exception
      * @return
@@ -114,7 +129,7 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
      * @return
      *      a {@link Func0} instance as described above
      */
-    default Func0<R> currying(final P1 param) {
+    default Func0<R> curry(final P1 param) {
         return () -> apply(param);
     }
 
@@ -186,6 +201,18 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
     }
 
     /**
+     * Returns a {@link Proc1} instance that when invoked to {@link Proc1#run(Object)}
+     * will call {@link #apply(Object)} method of this function and ignore the
+     * return value.
+     *
+     * @return
+     *      A {@link Proc1} instance as described above.
+     */
+    default Proc1<P1> toProcedure() {
+        return this::apply;
+    }
+
+    /**
      * Returns a `Func1` instance that when applied always
      * returns `null`
      *
@@ -197,7 +224,7 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
      *      a `Func1` instance as described above
      */
     @SuppressWarnings("unchecked")
-    static <PT, RT> Func1<PT, RT> dumb() {
+    static <PT, RT> Func1<PT, RT> nil() {
         return (Func1<PT, RT>) NIL;
     }
 
@@ -253,6 +280,13 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
             return (Func1<PT, RT>) function;
         }
         return function::apply;
+    }
+
+    static <P1> Func1<P1, ?> of(final Proc1<P1> procedure) {
+        return (p1) -> {
+            procedure.run(p1);
+            return null;
+        };
     }
 
     // TODO add lift to Option

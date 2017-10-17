@@ -43,7 +43,7 @@ public class Proc0Test extends TestBase {
         strings.clear();
     }
 
-    public static class OfRunnableTest {
+    public static class FactoryTest {
 
         @Test
         public void itShallKeepRunnableLogic() {
@@ -62,7 +62,7 @@ public class Proc0Test extends TestBase {
         }
     }
 
-    public static class NowThatAndThenTest extends Proc0Test {
+    public static class CompositionTest extends Proc0Test {
 
         @Test
         public void testNowThat() {
@@ -113,6 +113,7 @@ public class Proc0Test extends TestBase {
         @Test
         public void testToFunction() {
             Func0<String> func = proc0.toFunction();
+            no(strings.contains("bar"));
             func.apply();
             yes(strings.contains("bar"));
         }

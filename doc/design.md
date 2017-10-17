@@ -18,6 +18,7 @@ This document takes notes on design decisions of coding OSGL core library
     * `runOrElse(...fallback)` - run with fallback
 * conversion
     * `toFunction()` - adapt to function
+    * `curry()` - return a procedure that takes one less arguments of this procedure with supplied parameter
 * factory
     * `of(Runnable)` - adapt from runnable
     * `of(FuncX)` - adapt from function
@@ -36,5 +37,6 @@ This document takes notes on design decisions of coding OSGL core library
     * `orElse(fallbackValue)` - compose with fallback value
 * conversation
     * `toProcedure()` - adapt to procedure
+    * `curry()` - return a function that takes one less arguments of this function with supplied parameter
 * factory
     * `constant(x)` - create function that returns contant `x`

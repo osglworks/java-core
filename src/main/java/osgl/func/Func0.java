@@ -21,7 +21,6 @@ package osgl.func;
  */
 
 import osgl.$;
-import osgl.func.util.Func0ToProc0Adaptor;
 
 import java.util.function.*;
 
@@ -140,7 +139,7 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      *      a {@link Proc0} instance as described above.
      */
     default Proc0 toProcedure() {
-        return new Func0ToProc0Adaptor(this);
+        return this::apply;
     }
 
     /**
@@ -200,6 +199,7 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
         return () -> value;
     }
 
+    @SuppressWarnings("unchecked")
     static <T> Func0<T> nil() {
         return (Func0<T>) NIL;
     }
