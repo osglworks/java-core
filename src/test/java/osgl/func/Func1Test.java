@@ -22,6 +22,7 @@ package osgl.func;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import osgl.exception.E;
@@ -31,50 +32,53 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-@RunWith(MockitoJUnitRunner.class)
-public class Func1Test extends TestBase {
+@RunWith(Enclosed.class)
+public class Func1Test {
 
-    protected List<String> strings = new ArrayList<>();
-    protected Func1<String, Integer> addToStrings = (s) -> {strings.add(s); return s.length();};
+    @RunWith(MockitoJUnitRunner.class)
+    public static class Func1TestBase extends TestBase {
+        protected List<String> strings = new ArrayList<>();
+        protected Func1<String, Integer> addToStrings = (s) -> {strings.add(s); return s.length();};
 
-    @Before
-    public void prepare() {
-        strings.clear();
+        @Before
+        public void prepare() {
+            strings.clear();
+        }
+
+        @Test
+        public void testNil() {
+            Func1<Integer, Integer> x = Func1.nil();
+            isNull(x.apply(333));
+            isNull(Func1.nil().apply(new Object()));
+            same(Func1.nil(), Func1.nil());
+            same(Func1.NIL, Func1.nil());
+        }
+
+        @Test
+        public void testIdentity() {
+            Func1<Integer, Integer> x = Func1.identity();
+            Func1<String, String> y = Func1.identity();
+
+            same(x, y);
+            same(5, x.apply(5));
+            same("foo", y.apply("foo"));
+            same(Func1.IDENTITY, Func1.identity());
+        }
+
+        @Test
+        public void testConstant() {
+            Func1<Integer, Integer> x = Func1.constant(0);
+            eq(0, x.apply(5));
+            eq(0, x.apply(4));
+
+            Func1<Integer, String> y = Func1.constant("");
+            eq("", y.apply(5));
+            eq("", y.apply(4));
+        }
+
     }
 
-    @Test
-    public void testNil() {
-        Func1<Integer, Integer> x = Func1.nil();
-        isNull(x.apply(333));
-        isNull(Func1.nil().apply(new Object()));
-        same(Func1.nil(), Func1.nil());
-        same(Func1.NIL, Func1.nil());
-    }
-
-    @Test
-    public void testIdentity() {
-        Func1<Integer, Integer> x = Func1.identity();
-        Func1<String, String> y = Func1.identity();
-
-        same(x, y);
-        same(5, x.apply(5));
-        same("foo", y.apply("foo"));
-        same(Func1.IDENTITY, Func1.identity());
-    }
-
-    @Test
-    public void testConstant() {
-        Func1<Integer, Integer> x = Func1.constant(0);
-        eq(0, x.apply(5));
-        eq(0, x.apply(4));
-
-        Func1<Integer, String> y = Func1.constant("");
-        eq("", y.apply(5));
-        eq("", y.apply(4));
-    }
-
-
-    public static class CompositionTest extends Func1Test {
+    public static class CompositionTest extends Func1TestBase {
 
         private static class Foo {}
 
@@ -94,7 +98,7 @@ public class Func1Test extends TestBase {
         }
     }
 
-    public static class FallbackTest extends Func1Test {
+    public static class FallbackTest extends Func1TestBase {
 
         Func1<String, Integer> failCase = (s) -> {throw E.unexpected();};
         Func1<String, Integer> fallback = (s) -> {strings.add("**" + s + "**"); return s.length() + 4;};
@@ -131,7 +135,7 @@ public class Func1Test extends TestBase {
         }
     }
 
-    public static class ConversionTest extends Func1Test {
+    public static class ConversionTest extends Func1TestBase {
         @Test
         public void testToFunction() {
             addToStrings.toProcedure().run("foo");
@@ -145,7 +149,7 @@ public class Func1Test extends TestBase {
         }
     }
 
-    public static class FactoryTest extends Func1Test {
+    public static class FactoryTest extends Func1TestBase {
         @Test
         public void testOfProcedure() {
             Proc1<CharSequence> procedure = (cs) -> strings.add(cs.toString());

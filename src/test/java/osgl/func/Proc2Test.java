@@ -22,6 +22,7 @@ package osgl.func;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -33,35 +34,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-@RunWith(MockitoJUnitRunner.class)
-public class Proc2Test extends TestBase {
+@RunWith(Enclosed.class)
+public class Proc2Test {
 
-    protected List<String> strings1 = new ArrayList<>();
-    protected List<String> strings2 = new ArrayList<>();
-    protected Proc2<String, String> addToStrings = (s1, s2) -> {
-        strings1.add(s1);
-        strings2.add(s2);
-    };
+    @RunWith(MockitoJUnitRunner.class)
+    public static class Proc2TestBase extends TestBase {
+        protected List<String> strings1 = new ArrayList<>();
+        protected List<String> strings2 = new ArrayList<>();
 
-    @Mock
-    private Proc2<Object, Object> mockProc2;
+        protected Proc2<String, String> addToStrings = (s1, s2) -> {
+            strings1.add(s1);
+            strings2.add(s2);
+        };
 
-    @Before
-    public void prepare() {
-        strings1.clear();
-        strings2.clear();
+        @Mock
+        private Proc2<Object, Object> mockProc2;
+
+        @Before
+        public void prepare() {
+            strings1.clear();
+            strings2.clear();
+        }
+
+        @Test
+        public void itShallCallRunIfInvokeAccept() {
+            Object p1 = new Object();
+            Object p2 = new Object();
+            Mockito.doCallRealMethod().when(mockProc2).accept(p1, p2);
+            mockProc2.accept(p1, p2);
+            Mockito.verify(mockProc2, Mockito.times(1)).run(p1, p2);
+        }
     }
 
-    @Test
-    public void itShallCallRunIfInvokeAccept() {
-        Object p1 = new Object();
-        Object p2 = new Object();
-        Mockito.doCallRealMethod().when(mockProc2).accept(p1, p2);
-        mockProc2.accept(p1, p2);
-        Mockito.verify(mockProc2, Mockito.times(1)).run(p1, p2);
-    }
 
-    public static class CompositionTest extends Proc2Test {
+    public static class CompositionTest extends Proc2TestBase {
 
         private BiConsumer<String, String> after = (s1, s2) -> {
             strings1.add("'" + s1 + "'");
@@ -89,7 +95,7 @@ public class Proc2Test extends TestBase {
         }
     }
 
-    public static class FallbackTest extends Proc2Test {
+    public static class FallbackTest extends Proc2TestBase {
         Proc2<String, String> failCase = (s1, s2) -> {throw E.unexpected();};
         BiConsumer<String, String> fallback = (s1, s2) -> {
             strings1.add("**" + s1 + "**");
@@ -131,7 +137,7 @@ public class Proc2Test extends TestBase {
         }
     }
 
-    public static class ConversionTest extends Proc2Test {
+    public static class ConversionTest extends Proc2TestBase {
         @Test
         @SuppressWarnings("ReturnValueIgnored")
         public void testToFunction() {
@@ -142,13 +148,13 @@ public class Proc2Test extends TestBase {
 
         @Test
         public void testCurrying() {
-            addToStrings.curry("foo").run("bar");
+            addToStrings.curry("bar").run("foo");
             yes(strings1.contains("foo"));
             yes(strings2.contains("bar"));
         }
     }
 
-    public static class FactoryTest extends Proc2Test {
+    public static class FactoryTest extends Proc2TestBase {
         @Test
         public void testOfConsumer() {
             BiConsumer<CharSequence, CharSequence> consumer = (cs1, cs2) -> {

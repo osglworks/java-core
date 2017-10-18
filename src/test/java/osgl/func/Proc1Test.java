@@ -22,6 +22,7 @@ package osgl.func;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -33,28 +34,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-@RunWith(MockitoJUnitRunner.class)
-public class Proc1Test extends TestBase {
+@RunWith(Enclosed.class)
+public class Proc1Test {
 
-    protected List<String> strings = new ArrayList<>();
-    protected Proc1<String> addToStrings = (s) -> strings.add(s);
-    @Mock
-    private Proc1<Object> mockProc1;
+    @RunWith(MockitoJUnitRunner.class)
+    public static class Proc1TestBase extends TestBase {
+        protected List<String> strings = new ArrayList<>();
+        protected Proc1<String> addToStrings = (s) -> strings.add(s);
+        @Mock
+        private Proc1<Object> mockProc1;
 
-    @Before
-    public void prepare() {
-        strings.clear();
+        @Before
+        public void prepare() {
+            strings.clear();
+        }
+
+        @Test
+        public void itShallCallRunIfInvoke() {
+            Object param = new Object();
+            Mockito.doCallRealMethod().when(mockProc1).accept(param);
+            mockProc1.accept(param);
+            Mockito.verify(mockProc1, Mockito.times(1)).run(param);
+        }
     }
 
-    @Test
-    public void itShallCallRunIfInvoke() {
-        Object param = new Object();
-        Mockito.doCallRealMethod().when(mockProc1).accept(param);
-        mockProc1.accept(param);
-        Mockito.verify(mockProc1, Mockito.times(1)).run(param);
-    }
-
-    public static class CompositionTest extends Proc1Test {
+    public static class CompositionTest extends Proc1TestBase {
 
         private Consumer<String> after = (s) -> strings.add("'" + s + "'");
 
@@ -75,7 +79,7 @@ public class Proc1Test extends TestBase {
         }
     }
 
-    public static class FallbackTest extends Proc1Test {
+    public static class FallbackTest extends Proc1TestBase {
         Proc1<String> failCase = (s) -> {throw E.unexpected();};
         Proc1<String> fallback = (s) -> strings.add("**" + s + "**");
 
@@ -104,7 +108,7 @@ public class Proc1Test extends TestBase {
         }
     }
 
-    public static class ConversionTest extends Proc1Test {
+    public static class ConversionTest extends Proc1TestBase {
         @Test
         @SuppressWarnings("ReturnValueIgnored")
         public void testToFunction() {
@@ -119,7 +123,7 @@ public class Proc1Test extends TestBase {
         }
     }
 
-    public static class FactoryTest extends Proc1Test {
+    public static class FactoryTest extends Proc1TestBase {
         @Test
         public void testOfConsumer() {
             Consumer<CharSequence> consumer = (cs) -> strings.add(cs.toString());

@@ -23,6 +23,7 @@ package osgl.func;
 import static org.mockito.Mockito.*;
 
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -32,25 +33,28 @@ import osgl.ut.TestBase;
 import java.util.Random;
 import java.util.function.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class Func0Test extends TestBase {
+@RunWith(Enclosed.class)
+public class Func0Test {
 
-    @Mock
-    Func0<String> testTarget;
+    @RunWith(MockitoJUnitRunner.class)
+    public static class Func0TestBase extends TestBase {
+        @Mock
+        Func0<String> testTarget;
 
-    @Test
-    public void nilShallReturnNull() {
-        isNull(Func0.NIL.apply());
+        @Test
+        public void nilShallReturnNull() {
+            isNull(Func0.NIL.apply());
+        }
+
+        @Test
+        public void getShallDelegateToApply() {
+            when(testTarget.get()).thenCallRealMethod();
+            testTarget.get();
+            verify(testTarget, times(1)).apply();
+        }
     }
 
-    @Test
-    public void getShallDelegateToApply() {
-        when(testTarget.get()).thenCallRealMethod();
-        testTarget.get();
-        verify(testTarget, times(1)).apply();
-    }
-
-    public static class FallbackTest extends Func0Test {
+    public static class FallbackTest extends Func0TestBase {
 
         Func0<String> fallback = () -> "fallback";
 
@@ -72,7 +76,7 @@ public class Func0Test extends TestBase {
 
     }
 
-    public static class CompositionTest extends Func0Test {
+    public static class CompositionTest extends Func0TestBase {
         Function<String, Integer> after = String::length;
         Func0<String> testTarget = () -> "foo";
 
@@ -82,7 +86,7 @@ public class Func0Test extends TestBase {
         }
     }
 
-    public static class ConversionTest extends Func0Test {
+    public static class ConversionTest extends Func0TestBase {
 
         @Test
         public void testToProcedure() {
@@ -94,7 +98,7 @@ public class Func0Test extends TestBase {
 
     }
 
-    public static class FactoryTest extends Func0Test {
+    public static class FactoryTest extends Func0TestBase {
 
         Random r = new Random();
 

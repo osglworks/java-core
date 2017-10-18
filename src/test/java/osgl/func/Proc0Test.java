@@ -21,7 +21,9 @@ package osgl.func;
  */
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,18 +34,22 @@ import osgl.ut.TestBase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Proc0Test extends TestBase {
+@RunWith(Enclosed.class)
+public class Proc0Test {
 
-    List<String> strings = new ArrayList<>();
-    Runnable runnable = () -> strings.add("foo");
-    Proc0 proc0 = () -> strings.add("bar");
+    @Ignore
+    public static class Proc0TestBase extends TestBase {
+        List<String> strings = new ArrayList<>();
+        Runnable runnable = () -> strings.add("foo");
+        Proc0 proc0 = () -> strings.add("bar");
 
-    @Before
-    public void prepare() {
-        strings.clear();
+        @Before
+        public void prepare() {
+            strings.clear();
+        }
     }
 
-    public static class FactoryTest {
+    public static class FactoryTest extends Proc0TestBase {
 
         @Test
         public void itShallKeepRunnableLogic() {
@@ -62,7 +68,7 @@ public class Proc0Test extends TestBase {
         }
     }
 
-    public static class CompositionTest extends Proc0Test {
+    public static class CompositionTest extends Proc0TestBase {
 
         @Test
         public void testNowThat() {
@@ -79,7 +85,7 @@ public class Proc0Test extends TestBase {
         }
     }
 
-    public static class FallbackTest extends Proc0Test {
+    public static class FallbackTest extends Proc0TestBase {
         Proc0 failCase = E::unexpected;
         Proc0 fallback = () -> strings.add("fallback");
 
@@ -105,7 +111,7 @@ public class Proc0Test extends TestBase {
     }
 
     @RunWith(MockitoJUnitRunner.class)
-    public static class ConversionTest extends Proc0Test {
+    public static class ConversionTest extends Proc0TestBase {
 
         @Mock
         Func0<Object> mockFunc;
@@ -126,7 +132,7 @@ public class Proc0Test extends TestBase {
 
     }
 
-    public static class NullabilityTest extends Proc0Test {
+    public static class NullabilityTest extends Proc0TestBase {
 
         @Test(expected = NullPointerException.class)
         public void testAndThen_Runnable() {
