@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.func;
 
 /*-
  * #%L
@@ -20,15 +20,8 @@ package osgl.stage;
  * #L%
  */
 
-public class ObjectEnsurer<T> extends ObjectStage<T> {
-    public ObjectEnsurer(T target) {
-        super(target);
-    }
-
-    public T notNull() {
-        if (null == target) {
-            throw new NullPointerException();
-        }
-        return target;
-    }
+/**
+ * Test {@link CharPredicate}
+ */
+public class CharPredicateTest {
 }

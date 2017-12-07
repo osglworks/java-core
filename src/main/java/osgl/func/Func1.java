@@ -20,6 +20,9 @@ package osgl.func;
  * #L%
  */
 
+import osgl.$;
+import osgl.Option;
+
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -131,6 +134,18 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
      */
     default Func0<R> curry(final P1 param) {
         return () -> apply(param);
+    }
+
+    /**
+     * Lift this function to a function that returns {@link Option} of the
+     * value returned by this function.
+     *
+     * @return
+     *      A function that returns {@link Option} of the return value
+     *      of this function.
+     */
+    default Func1<P1, Option<R>> lift() {
+        return (p) -> $.any(apply(p));
     }
 
     /**
@@ -301,7 +316,5 @@ public interface Func1<P1, R> extends FuncBase, Function<P1, R> {
             return null;
         };
     }
-
-    // TODO add lift to Option
 
 }

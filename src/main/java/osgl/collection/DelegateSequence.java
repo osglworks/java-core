@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.collection;
 
 /*-
  * #%L
@@ -22,30 +22,26 @@ package osgl.stage;
 
 import osgl.$;
 
-class ObjectStage<T> {
+import java.util.Iterator;
 
-    T target;
+class DelegateSequence<T> implements Sequence<T> {
 
-    ObjectStage(T target) {
-        this.target = target;
+    private final Sequence<? extends T> seq;
+
+    DelegateSequence(Sequence<? extends T> seq) {
+        this.seq = $.requireNotNull(seq);
     }
 
     @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
+    public Iterator<T> iterator() {
+        return (Iterator<T>) seq.iterator();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
+    static <T> DelegateSequence<T> of(Sequence<? extends T> seq) {
+        if (seq instanceof DelegateSequence) {
+            return (DelegateSequence<T>) seq;
         }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
+        return new DelegateSequence<>(seq);
     }
+
 }

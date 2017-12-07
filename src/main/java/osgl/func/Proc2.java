@@ -36,6 +36,7 @@ import java.util.function.Consumer;
  * @param <P2>
  *     the type of the second parameter
  */
+@FunctionalInterface
 public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
 
     /**
@@ -78,7 +79,7 @@ public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
      *      A composite `Proc2` instance as described above.
      */
     default Proc2<P1, P2> andThen(BiConsumer<? super P1, ? super P2> after) {
-        $.ensureNotNull(after);
+        $.requireNotNull(after);
         return (p1, p2) -> {
             run(p1, p2);
             after.accept(p1, p2);
@@ -109,7 +110,7 @@ public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
      *      a composite `Proc2` instance as described above
      */
     default Proc2<P1, P2> nowThat(BiConsumer<? super P1, ? super P2> before) {
-        $.ensureNotNull(before);
+        $.requireNotNull(before);
         return (p1, p2) -> {
             before.accept(p1, p2);
             run(p1, p2);
@@ -127,7 +128,7 @@ public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
      *      an new `Proc2` instance as described above
      */
     default Proc2<P1, P2> orElse(BiConsumer<? super P1, ? super P2> fallback) {
-        $.ensureNotNull(fallback);
+        $.requireNotNull(fallback);
         return (p1, p2) -> runOrElse(p1, p2, fallback);
     }
 
@@ -146,7 +147,7 @@ public interface Proc2<P1, P2> extends BiConsumer<P1, P2> {
      *      this procedure
      */
     default void runOrElse(P1 p1, P2 p2, BiConsumer<? super P1, ? super P2> fallback) {
-        $.ensureNotNull(fallback);
+        $.requireNotNull(fallback);
         try {
             run(p1, p2);
         } catch (Exception e) {

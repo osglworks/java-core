@@ -26,4 +26,13 @@ public class Exceptions {
     public static UnexpectedException unexpected() {
         throw new UnexpectedException();
     }
+
+    public static UnsupportedOperationException tbd() {
+        throw new UnsupportedOperationException("To be implemented");
+    }
+
+    public static UnsupportedOperationException tbd(String feature) {
+        throw new UnsupportedOperationException(feature + " to be implemented");
+    }
+
 }

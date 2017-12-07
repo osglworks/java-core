@@ -20,6 +20,9 @@ package osgl.func;
  * #L%
  */
 
+import osgl.$;
+import osgl.Option;
+
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -116,6 +119,18 @@ public interface Func2<P1, P2, R> extends FuncBase, BiFunction<P1, P2, R> {
      */
     default Func1<P1, R> curry(final P2 p2) {
         return (p1) -> apply(p1, p2);
+    }
+
+    /**
+     * Lift this function to a function that returns {@link Option} of the
+     * value returned by this function.
+     *
+     * @return
+     *      A function that returns {@link Option} of the return value
+     *      of this function.
+     */
+    default Func2<P1, P2, Option<R>> lift() {
+        return (p1, p2) -> $.any(apply(p1, p2));
     }
 
     /**
@@ -220,7 +235,5 @@ public interface Func2<P1, P2, R> extends FuncBase, BiFunction<P1, P2, R> {
         }
         return function::apply;
     }
-
-    // TODO add lift to Option
 
 }

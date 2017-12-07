@@ -33,6 +33,7 @@ import java.util.function.Consumer;
  * @param <P1>
  *     the type of the parameter
  */
+@FunctionalInterface
 public interface Proc1<P1> extends Consumer<P1> {
 
     /**
@@ -71,7 +72,7 @@ public interface Proc1<P1> extends Consumer<P1> {
      *      A composite `Proc1` instance as described above.
      */
     default Proc1<P1> andThen(Consumer<? super P1> after) {
-        $.ensureNotNull(after);
+        $.requireNotNull(after);
         return (P1 param) -> {
             run(param);
             after.accept(param);
@@ -102,7 +103,7 @@ public interface Proc1<P1> extends Consumer<P1> {
      *      a composite `Proc1` instance as described above
      */
     default Proc1<P1> nowThat(Consumer<? super P1> before) {
-        $.ensureNotNull(before);
+        $.requireNotNull(before);
         return (param) -> {
             before.accept(param);
             run(param);
@@ -120,7 +121,7 @@ public interface Proc1<P1> extends Consumer<P1> {
      *      an new `Proc1` instance as described above
      */
     default Proc1<P1> orElse(Consumer<? super P1> fallback) {
-        $.ensureNotNull(fallback);
+        $.requireNotNull(fallback);
         return (param) -> runOrElse(param, fallback);
     }
 
@@ -137,7 +138,7 @@ public interface Proc1<P1> extends Consumer<P1> {
      *      this procedure
      */
     default void runOrElse(P1 param, Consumer<? super P1> fallback) {
-        $.ensureNotNull(fallback);
+        $.requireNotNull(fallback);
         try {
             run(param);
         } catch (Exception e) {

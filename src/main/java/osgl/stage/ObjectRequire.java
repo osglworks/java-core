@@ -20,32 +20,18 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
+public class ObjectRequire<T> extends ObjectStage<T> {
 
-class ObjectStage<T> {
-
-    T target;
-
-    ObjectStage(T target) {
-        this.target = target;
+    public ObjectRequire(T target) {
+        super(target);
     }
 
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
+    public T notNull() {
+        if (null == target) {
+            throw new NullPointerException();
+        }
+        return target;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
-    }
+
 }

@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.collection;
 
 /*-
  * #%L
@@ -20,32 +20,15 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-class ObjectStage<T> {
-
-    T target;
-
-    ObjectStage(T target) {
-        this.target = target;
-    }
-
+public class IterableTraversableTest extends TraversableTestBase {
     @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
+    protected <T> Traversable<T> create(T... elements) {
+        List<T> list = new ArrayList<>();
+        list.addAll(Arrays.asList(elements));
+        return new DelegateTraversable<>(list);
     }
 }

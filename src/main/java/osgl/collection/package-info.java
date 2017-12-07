@@ -1,4 +1,13 @@
-package osgl.stage;
+/**
+ * osg.collection - provides extension classes to Java Collection Framework
+ *
+ * * {@link osgl.collection.Traversable} - {@link java.lang.Iterable} with functional programming extensions
+ * * {@link osgl.collection.Sequence} - `Traversable` with fixed order
+ * * {@link osgl.collection.T2} - two elements tuple
+ * * {@link osgl.collection.T3} - three elements tuple
+ * * TODO - finish the list
+ */
+package osgl.collection;
 
 /*-
  * #%L
@@ -20,32 +29,3 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
-
-class ObjectStage<T> {
-
-    T target;
-
-    ObjectStage(T target) {
-        this.target = target;
-    }
-
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
-    }
-}

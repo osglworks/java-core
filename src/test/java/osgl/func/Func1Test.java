@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import osgl.exception.E;
 import osgl.ut.TestBase;
@@ -37,8 +39,11 @@ public class Func1Test {
 
     @RunWith(MockitoJUnitRunner.class)
     public static class Func1TestBase extends TestBase {
+
         protected List<String> strings = new ArrayList<>();
         protected Func1<String, Integer> addToStrings = (s) -> {strings.add(s); return s.length();};
+        @Mock
+        protected Func1<Object, Object> mockFunc1;
 
         @Before
         public void prepare() {
@@ -146,6 +151,15 @@ public class Func1Test {
         public void testCurrying() {
             eq(3, addToStrings.curry("foo").apply());
             yes(strings.contains("foo"));
+        }
+
+        @Test
+        @SuppressWarnings("ReturnValueIgnored")
+        public void testLift() {
+            Mockito.when(mockFunc1.lift()).thenCallRealMethod();
+            Object param = new Object();
+            mockFunc1.lift().apply(param);
+            Mockito.verify(mockFunc1, Mockito.times(1)).apply(param);
         }
     }
 

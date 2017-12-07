@@ -96,6 +96,13 @@ public class Func0Test {
             verify(testTarget, times(1)).apply();
         }
 
+        @Test
+        public void testLift() {
+            when(testTarget.lift()).thenCallRealMethod();
+            testTarget.lift().apply();
+            verify(testTarget, times(1)).apply();
+        }
+
     }
 
     public static class FactoryTest extends Func0TestBase {

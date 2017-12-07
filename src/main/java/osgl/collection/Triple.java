@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.collection;
 
 /*-
  * #%L
@@ -20,32 +20,19 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
-
-class ObjectStage<T> {
-
-    T target;
-
-    ObjectStage(T target) {
-        this.target = target;
-    }
-
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
+/**
+ * `Triple` is an alias of {@link T3}
+ *
+ * @param <A>
+ *     Type of the first element
+ * @param <B>
+ *     Type of the second element
+ * @param <C>
+ *     Type of the third element
+ */
+public class Triple<A, B, C> extends T3<A, B, C> {
+    public Triple(A a, B b, C c) {
+        super(a, b, c);
     }
 }
+

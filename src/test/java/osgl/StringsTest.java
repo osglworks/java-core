@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl;
 
 /*-
  * #%L
@@ -20,32 +20,33 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
+import org.junit.Test;
+import osgl.ut.TestBase;
 
-class ObjectStage<T> {
+public class StringsTest extends TestBase {
 
-    T target;
-
-    ObjectStage(T target) {
-        this.target = target;
+    @Test
+    public void nullStringIsEmpty() {
+        String s = null;
+        yes(Strings.empty(s));
+        yes(Strings.isEmpty(s));
+        no(Strings.notEmpty(s));
     }
 
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
+    @Test
+    public void stringWithNoContentIsEmpty() {
+        String s = "";
+        yes(Strings.empty(s));
+        yes(Strings.isEmpty(s));
+        no(Strings.notEmpty(s));
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
+    @Test
+    public void stringWithContentIsNotEmpty() {
+        String s = " ";
+        no(Strings.empty(s));
+        no(Strings.isEmpty(s));
+        yes(Strings.notEmpty(s));
     }
+
 }

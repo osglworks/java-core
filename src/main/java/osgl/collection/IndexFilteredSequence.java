@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.collection;
 
 /*-
  * #%L
@@ -22,30 +22,20 @@ package osgl.stage;
 
 import osgl.$;
 
-class ObjectStage<T> {
+import java.util.Iterator;
+import java.util.function.IntPredicate;
 
-    T target;
+class IndexFilteredSequence<T> extends DelegateSequence<T> {
 
-    ObjectStage(T target) {
-        this.target = target;
+    private final IntPredicate indexFilter;
+
+    public IndexFilteredSequence(Sequence<? extends T> seq, IntPredicate indexFilter) {
+        super(seq);
+        this.indexFilter = $.requireNotNull(indexFilter);
     }
 
     @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
+    public Iterator<T> iterator() {
+        return Iterators.filterIndex(super.iterator(), indexFilter);
     }
 }

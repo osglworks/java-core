@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.collection;
 
 /*-
  * #%L
@@ -20,32 +20,14 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
+/**
+ * A namespace of OSGL core that provides classes/utilities extend Java collection framework.
+ */
+public enum C {
 
-class ObjectStage<T> {
+    INSTANCE;
 
-    T target;
 
-    ObjectStage(T target) {
-        this.target = target;
-    }
 
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
-    }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
-    }
 }

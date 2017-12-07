@@ -1,4 +1,4 @@
-package osgl.stage;
+package util;
 
 /*-
  * #%L
@@ -22,30 +22,33 @@ package osgl.stage;
 
 import osgl.$;
 
-class ObjectStage<T> {
+import java.lang.reflect.Array;
 
-    T target;
+public class HashCodeCalculator {
 
-    ObjectStage(T target) {
-        this.target = target;
+    private final int hcInit;
+    private final int hcFact;
+
+    public HashCodeCalculator(int hcInit, int hcFact) {
+        this.hcInit = hcInit;
+        this.hcFact = hcFact;
     }
 
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
+    public int hashCode(Object array) {
+        int len = Array.getLength(array);
+        int ret = hcInit;
+        for (int i = 0; i < len; ++i) {
+            ret = ret * hcFact + $.hc(Array.get(array, i));
+        }
+        return ret;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
+    public int hashCode(Iterable<?> iterable) {
+        int ret = hcInit;
+        for (Object v : iterable) {
+            ret = ret * hcFact + $.hc(v);
         }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
+        return ret;
     }
+
 }

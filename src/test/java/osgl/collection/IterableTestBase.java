@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.collection;
 
 /*-
  * #%L
@@ -20,32 +20,13 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
+import org.junit.Ignore;
 
-class ObjectStage<T> {
+@Ignore
+public class IterableTestBase extends IteratorTestBase {
 
-    T target;
-
-    ObjectStage(T target) {
-        this.target = target;
+    protected static void ceq(Iterable expected, Iterable actual) {
+        ceq(expected.iterator(), actual.iterator());
     }
 
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
-    }
 }

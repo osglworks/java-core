@@ -25,6 +25,7 @@ import osgl.$;
 /**
  * A procedure that takes no parameters.
  */
+@FunctionalInterface
 public interface Proc0 extends FuncBase, Runnable {
 
     /**
@@ -51,7 +52,7 @@ public interface Proc0 extends FuncBase, Runnable {
      *      if `after` is `null`
      */
     default Proc0 andThen(Runnable after) {
-        $.ensureNotNull(after);
+        $.requireNotNull(after);
         return () -> {
             run();
             after.run();
@@ -70,7 +71,7 @@ public interface Proc0 extends FuncBase, Runnable {
      *      if `before` is `null`
      */
     default Proc0 nowThat(Runnable before) {
-        $.ensureNotNull(before);
+        $.requireNotNull(before);
         return () -> {
             before.run();
             run();
@@ -91,7 +92,7 @@ public interface Proc0 extends FuncBase, Runnable {
      * @see #runOrElse(Runnable)
      */
     default Proc0 orElse(Runnable fallback) {
-        $.ensureNotNull(fallback);
+        $.requireNotNull(fallback);
         return () -> runOrElse(fallback);
     }
 
@@ -105,7 +106,7 @@ public interface Proc0 extends FuncBase, Runnable {
      * @see #orElse(Runnable)
      */
     default void runOrElse(Runnable fallback) {
-        $.ensureNotNull(fallback);
+        $.requireNotNull(fallback);
         try {
             run();
         } catch (Exception e) {
@@ -161,7 +162,7 @@ public interface Proc0 extends FuncBase, Runnable {
      *      if `runnable` is `null`
      */
     static Proc0 of(Runnable runnable) {
-        $.ensureNotNull(runnable);
+        $.requireNotNull(runnable);
         if (runnable instanceof Proc0) {
             return (Proc0) runnable;
         }

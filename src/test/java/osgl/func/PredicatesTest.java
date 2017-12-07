@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.func;
 
 /*-
  * #%L
@@ -20,32 +20,25 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
+import static osgl.Strings.Matcher.noUpperCase;
 
-class ObjectStage<T> {
+import org.junit.Test;
+import osgl.exception.E;
+import osgl.ut.TestBase;
 
-    T target;
+public class PredicatesTest extends TestBase {
 
-    ObjectStage(T target) {
-        this.target = target;
+    @Test
+    public void testAllInLowerCase() {
+        yes(noUpperCase().test("abc"));
+        no(noUpperCase().test("Abc"));
+        yes(noUpperCase().test("abc, xyz and 123"));
+        yes(noUpperCase().test("abc 和 一二三"));
     }
 
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
+    @Test
+    public void testAllInUpperCase() {
+        E.tbd();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
-    }
 }

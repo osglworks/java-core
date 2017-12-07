@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.collection;
 
 /*-
  * #%L
@@ -20,32 +20,25 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
+import java.util.Iterator;
 
-class ObjectStage<T> {
+class CompositeSequence<T> implements Sequence<T> {
 
-    T target;
+    private final Sequence<? extends T> head;
 
-    ObjectStage(T target) {
-        this.target = target;
+    private final Sequence<? extends T> tail;
+
+    CompositeSequence(Sequence<? extends T> head, Sequence<? extends T> tail) {
+        this.head = head;
+        this.tail = tail;
     }
 
     @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
+    public Iterator<T> iterator() {
+        return Iterators.composite(head.iterator(), tail.iterator());
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
+    static <T> CompositeSequence<T> of(Sequence<? extends T> head, Sequence<? extends T> tail) {
+        return new CompositeSequence<>(head, tail);
     }
 }

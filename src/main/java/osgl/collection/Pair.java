@@ -1,4 +1,4 @@
-package osgl.stage;
+package osgl.collection;
 
 /*-
  * #%L
@@ -20,32 +20,16 @@ package osgl.stage;
  * #L%
  */
 
-import osgl.$;
-
-class ObjectStage<T> {
-
-    T target;
-
-    ObjectStage(T target) {
-        this.target = target;
-    }
-
-    @Override
-    public int hashCode() {
-        return $.hc(target, getClass());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (null == obj) {
-            return false;
-        }
-        if (obj.getClass().equals(getClass())) {
-            return $.eq(target, ((ObjectStage) obj).target);
-        }
-        return false;
+/**
+ * `Pair` is an alias of {@link Binary} and {@link T2}
+ *
+ * @param <A>
+ *     Type of the first element
+ * @param <B>
+ *     Type of the second element
+ */
+public class Pair<A, B> extends Binary<A, B> {
+    public Pair(A a, B b) {
+        super(a, b);
     }
 }

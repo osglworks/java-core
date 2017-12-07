@@ -21,6 +21,7 @@ package osgl.func;
  */
 
 import osgl.$;
+import osgl.Option;
 
 import java.util.function.*;
 
@@ -63,7 +64,7 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      * @return a `Func0` instance as described above
      */
     default <T> Func0<T> andThen(Function<? super R, ? extends T> after) {
-        $.ensureNotNull(after);
+        $.requireNotNull(after);
         return () -> after.apply(this.apply());
     }
 
@@ -90,7 +91,7 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      *         if exception encountered applying this function
      */
     default R applyOrElse(final Func0<? extends R> fallback) {
-        $.ensureNotNull(fallback);
+        $.requireNotNull(fallback);
         try {
             return apply();
         } catch (Exception e) {
@@ -105,6 +106,18 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
      */
     default R get() {
         return apply();
+    }
+
+    /**
+     * Lift this function to a function that returns an
+     * {@link Option}
+     *
+     * @return
+     *      A function that returns {@link Option} of the
+     *      return value of this function.
+     */
+    default Func0<Option<R>> lift() {
+        return () -> $.any(apply());
     }
 
     /**
@@ -289,7 +302,5 @@ public interface Func0<R> extends FuncBase, Supplier<R> {
         }
         return longSupplier::getAsLong;
     }
-
-    // TODO add lift to Option
 
 }
