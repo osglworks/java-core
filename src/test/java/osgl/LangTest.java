@@ -42,7 +42,18 @@ import java.util.function.*;
 @RunWith(Enclosed.class)
 public class LangTest extends TestBase {
 
-    public static class ConfigTest extends TestBase {
+    public static class LangCoreTest {
+        @Test(expected = IllegalStateException.class)
+        public void langCannotBeConstructedByUserApp() {
+            new Lang();
+        }
+        @Test(expected = IllegalStateException.class)
+        public void langCannotBeConstructedBySubClassOfUserApp() {
+            new Lang() {};
+        }
+    }
+
+    public static class ConfigTest {
 
         @Before
         public void reset() {
@@ -529,6 +540,36 @@ public class LangTest extends TestBase {
             Object o5 = new Object();
             Object[] oa = {o1, o2, o3, o4, o5, o1, o2, o4};
             eq(hc.hashCode(oa), $.hashCode(o1, o2, o3, o4, o5, o1, o2, o4));
+        }
+
+    }
+
+    public static class ClassInstanceUtilTest extends TestBase {
+
+        @Test
+        public void testCallerClass() {
+            Class<?> c = callerClass();
+            eq(ClassInstanceUtilTest.class, c);
+        }
+
+        private Class<?> callerClass() {
+            return $.callerClass();
+        }
+
+        @Test
+        public void testCaller() {
+            eq("osgl.LangTest$ClassInstanceUtilTest.testCaller(...)", callerInfo());
+        }
+
+        private String callerInfo() {
+            return $.callerInfo();
+        }
+
+        @Test
+        public void testClassForName() {
+            eq(int.class, $.classForName("int"));
+            eq(Long.class, $.classForName("java.lang.Long"));
+            eq(Lang.class, $.classForName("osgl.Lang"));
         }
 
     }

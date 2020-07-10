@@ -39,6 +39,12 @@
     <powermock.version>1.7.1</powermock.version>
   </properties>
 
+  <scm>
+    <connection>scm:git:${scm.url}</connection>
+    <developerConnection>scm:git:${scm.url}</developerConnection>
+    <url>https://github.com/osglworks/java-core</url>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>org.powermock</groupId>

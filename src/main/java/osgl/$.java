@@ -21,5 +21,7 @@ package osgl;
  */
 
 public class $ extends Lang {
+    public static final $ INSTANCE = new $();
+    public static final $ $ = INSTANCE;
     private $() {}
 }

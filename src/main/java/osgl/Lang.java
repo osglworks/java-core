@@ -26,9 +26,11 @@ import osgl.collection.Pair;
 import osgl.collection.T2;
 import osgl.collection.T3;
 import osgl.collection.Triple;
+import osgl.exception.E;
 import osgl.exception.NotAppliedException;
-import osgl.stage.ObjectRequire;
+import osgl.exception.UnexpectedClassNotFoundException;
 import osgl.stage.ObjectPredicate;
+import osgl.stage.ObjectRequire;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -109,7 +111,13 @@ public class Lang {
      */
     public static final Conf conf = new Conf();
 
+    public static final $ INSTANCE = osgl.$.$;
+    public static final $ $ = Lang.INSTANCE;
+
     Lang() {
+        if (!"osgl.$.<init>(...)".equals(callerInfo())) {
+            throw new IllegalStateException("Cannot construct osgl.Lang instance");
+        }
     }
 
     /**
@@ -1245,6 +1253,62 @@ public class Lang {
      */
     public static <A, B, C> Triple<A, B, C> T3(A a, B b, C c) {
         return T3.of(a, b, c);
+    }
+
+    // -------------------- Reflection/Class/new instance Utils ---------------------
+
+    private static class WhoCalls extends SecurityManager {
+        Class<?> whoCalls() {
+            return super.getClassContext()[2];
+        }
+    }
+
+    private static final WhoCalls WHO_CALLS = new WhoCalls();
+
+    /**
+     * Returns the class of the caller to the method that invoke this method.
+     *
+     * @return the caller class to the method invoke `callerClass()` method
+     */
+    public static Class<?> callerClass() {
+        return WHO_CALLS.whoCalls();
+    }
+
+    /**
+     * Returns the `className.methodName(...)` where `className` is the
+     * name of the {@link #callerClass()} and `methodName` is the name
+     * of the method that calls the method that invokes the `callerInfo()`
+     * method.
+     *
+     * @return a caller string representation as described above
+     */
+    public static String callerInfo() {
+        StackTraceElement[] sa = new RuntimeException().getStackTrace();
+        E.unexpectedIf(sa.length < 3, "Whoops!");
+        StackTraceElement ste = sa[2];
+        String className = ste.getClassName();
+        String methodName = ste.getMethodName();
+        // TODO: replace with S.concat
+        return className + "." + methodName + "(...)";
+    }
+
+    /**
+     *
+     * @param className
+     * @return
+     */
+    public static Class<?> classForName(String className) {
+        return classForName(className, Thread.currentThread().getContextClassLoader());
+    }
+
+    public static Class<?> classForName(String className, ClassLoader classLoader) {
+        Class c = _LangSupport.primitiveTypeLookup.get(className);
+        if (null != c) return c;
+        try {
+            return Class.forName(className, true, classLoader);
+        } catch (ClassNotFoundException e) {
+            throw new UnexpectedClassNotFoundException(e);
+        }
     }
 
 }
